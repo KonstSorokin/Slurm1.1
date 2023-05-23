@@ -1,17 +1,28 @@
-name: Docker Image Build
+name: Docker Image Build and Push
 
 on:
   push:
     branches:
       - master
-
+env:
+  GHCR_REGISTRY: ghcr.io
+  GHCR_REPOSITORY: KonstSorokin/Slurm1.1
+  IMAGE_NAME: 0101_slurm_v1
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Build Docker Image
-        run: docker build -t 0101_slurm_v1 .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GHCR
+        run: echo "${{ secrets.Navykum }}" | docker login -u "${{ secrets.GHCR_USERNAME }}" --password-stdin ghcr.io
+
+      - name: Build and Push Docker Image
+        run: |
+          docker buildx create --use --name mybuilder
+          docker buildx build --platform linux/amd64,linux/arm64 --tag "${{ env.GHCR_REGISTRY }}/${{ env.GHCR_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" --push .
