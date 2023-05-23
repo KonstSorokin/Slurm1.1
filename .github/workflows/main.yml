@@ -20,7 +20,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Login to GHCR
-        run: docker login -u "${{ secret.GHCR_USER }}" -p "${{ secret.GHCR_TOKEN}}" ghcr.io
+        run: echo "${{ secret.GHCR_TOKEN }}" | docker login -u "${{ secret.GHCR_USER}}" --password-stdin ghcr.io
 
       - name: Build and Push Docker Image
         run: |
