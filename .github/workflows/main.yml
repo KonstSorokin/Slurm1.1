@@ -7,6 +7,7 @@ on:
 env:
   GHCR_REGISTRY: ghcr.io
   GHCR_REPOSITORY: KonstSorokin/Slurm1.1
+  GHCR_USERNAME: KonstSorokin
   IMAGE_NAME: 0101_slurm_v1
 jobs:
   build-and-push:
@@ -20,7 +21,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Login to GHCR
-        run: echo "${{ secrets.Navykum }}" | docker login -u "${{ secrets.GHCR_USERNAME }}" --password-stdin ghcr.io
+        run: echo "${{ secrets.Navykum }}" | docker login -u "${{ env.GHCR_USERNAME }}" --password-stdin ghcr.io
 
       - name: Build and Push Docker Image
         run: |
